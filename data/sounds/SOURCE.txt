@@ -1,0 +1,3 @@
+Samples extracted from https://www.youtube.com/watch?v=gLn7F22HngI
+48 kHz mono signed 16-bit little endian. Volume 35%.
+key:1.075s; space:1.605s; enter:2.495s; mouse-down:7.765s; mouse-up:7.895s

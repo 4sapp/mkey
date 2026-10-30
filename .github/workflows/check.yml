@@ -1,0 +1,32 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libgtk-4-dev libglib2.0-dev libpulse-dev xvfb dbus-x11
+          python3 -m pip install clang-format==23.1.3
+      - name: Check formatting
+        run: make format-check
+      - name: Build
+        run: make -j2
+      - name: Core tests
+        run: make test
+      - name: GTK integration tests
+        run: dbus-run-session -- xvfb-run -a make test-ui
+      - name: Validate staged installation
+        run: make install DESTDIR="$RUNNER_TEMP/mkey-package" PREFIX=/usr/local

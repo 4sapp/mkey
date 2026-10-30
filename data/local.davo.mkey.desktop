@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Mkey
+Comment=Keyboard and mouse sounds
+Comment[es]=Sonidos de teclado y mouse
+Exec=env MKEY_DATA_DIR="@DATADIR@" "@BINDIR@/mkey-gui"
+Icon=local.davo.mkey
+Terminal=false
+Categories=AudioVideo;Audio;Utility;
+StartupNotify=true
+StartupWMClass=local.davo.mkey

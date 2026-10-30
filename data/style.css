@@ -1,0 +1,77 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+ * Layout adapted from Jorts; see THIRD_PARTY.md. */
+window.mkey {
+    background: @note_bg;
+    color: @note_ink;
+    border-radius: 8px;
+}
+.mkey headerbar {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    min-height: 44px;
+    padding: 0 10px;
+}
+.mkey editablelabel {
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 5px 18px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.mkey editablelabel:hover { border-color: alpha(@note_ink, 0.25); }
+.mkey editablelabel entry { color: @note_ink; background: alpha(white, 0.3); }
+.mkey .body label { font-weight: 500; }
+.mkey .body label.detail { font-size: 12px; opacity: 0.65; }
+.mkey .volume { font-weight: 700; }
+.mkey button.flat {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    color: @note_ink;
+    border-radius: 6px;
+    padding: 8px;
+}
+.mkey button.flat:hover { background: alpha(@note_ink, 0.17); }
+.mkey button.flat image { color: @note_ink; -gtk-icon-shadow: 0 1px alpha(white, 0.5); }
+.mkey button.test { padding: 7px 0; }
+.mkey button.test label { font-size: 14px; }
+.mkey switch:checked, .mkey scale highlight { background: @note_ink; }
+.mkey scale { padding: 10px 0; }
+.mkey scale trough { background: alpha(@note_ink, 0.18); min-height: 5px; }
+.mkey scale slider {
+    background: @note_ink;
+    border: 2px solid alpha(white, 0.8);
+    min-width: 15px;
+    min-height: 15px;
+}
+.mkey entry.testfield {
+    font-size: 16px;
+    background: transparent;
+    color: @note_ink;
+    border: 0;
+    box-shadow: none;
+    padding: 10px 0;
+}
+.mkey entry.testfield:focus { box-shadow: inset 0 -1px alpha(@note_ink, 0.35); }
+.mkey .toolbar { padding: 3px 6px; background: transparent; }
+.mkey windowhandle { background: transparent; }
+.mkey .toolbar image { -gtk-icon-size: 22px; }
+.mkey popover { color: #343434; font-size: 14px; }
+.mkey popover contents { background: #fafafa; border-radius: 10px; padding: 14px; }
+.mkey popover button { color: #343434; }
+.mkey popover label { font-size: 14px; }
+button.swatch {
+    min-width: 18px;
+    min-height: 24px;
+    padding: 0;
+    border-radius: 5px;
+    border: 1px solid alpha(black, 0.15);
+    box-shadow: none;
+}
+button.swatch:hover { outline: 2px solid #777; outline-offset: 2px; }
+.prefwindow { background: #fafafa; color: #404040; }
+.prefwindow .preftitle { font-size: 17px; font-weight: 700; }
+.prefwindow .prefname { font-size: 15px; font-weight: 600; }
+.prefwindow .detail { font-size: 12px; opacity: 0.7; }
+.prefwindow button { padding: 7px 18px; }

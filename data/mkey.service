@@ -1,0 +1,13 @@
+[Unit]
+Description=Mkey - Keyboard and mouse sounds
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart="@BINDIR@/mkey" "@DATADIR@/sounds"
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

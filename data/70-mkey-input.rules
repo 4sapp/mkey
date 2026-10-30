@@ -1,0 +1,4 @@
+# Optional: allow the active local desktop user to read keyboard/mouse events.
+# Install in /etc/udev/rules.d/ only if the service cannot open your devices.
+SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_INPUT_KEYBOARD}=="1", TAG+="uaccess"
+SUBSYSTEM=="input", KERNEL=="event*", ENV{ID_INPUT_MOUSE}=="1", TAG+="uaccess"
