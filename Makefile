@@ -6,11 +6,11 @@ BUILD_DIR ?= build
 CPPFLAGS += -D_GNU_SOURCE -Isrc
 CFLAGS ?= -O2 -g
 CFLAGS += -std=c11 -Wall -Wextra -Werror -Wpedantic -pthread
-GLIB_CFLAGS ?= $(shell $(PKG_CONFIG) --cflags glib-2.0)
+GLIB_CFLAGS ?= $(patsubst -I%,-isystem%,$(shell $(PKG_CONFIG) --cflags glib-2.0))
 GLIB_LIBS ?= $(shell $(PKG_CONFIG) --libs glib-2.0)
-GTK_CFLAGS ?= $(shell $(PKG_CONFIG) --cflags 'gtk4 >= 4.12')
+GTK_CFLAGS ?= $(patsubst -I%,-isystem%,$(shell $(PKG_CONFIG) --cflags 'gtk4 >= 4.12'))
 GTK_LIBS ?= $(shell $(PKG_CONFIG) --libs 'gtk4 >= 4.12')
-PULSE_CFLAGS ?= $(shell $(PKG_CONFIG) --cflags libpulse-simple)
+PULSE_CFLAGS ?= $(patsubst -I%,-isystem%,$(shell $(PKG_CONFIG) --cflags libpulse-simple))
 PULSE_LIBS ?= $(shell $(PKG_CONFIG) --libs libpulse-simple)
 
 COMMON_SOURCES := src/common/settings.c
