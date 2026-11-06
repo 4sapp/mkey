@@ -20,6 +20,7 @@ typedef struct {
 } MkeyMixer;
 
 void mkey_mixer_init(MkeyMixer *mixer, const MkeySample *samples);
+void mkey_mixer_set_samples(MkeyMixer *mixer, const MkeySample *samples);
 void mkey_mixer_clear(MkeyMixer *mixer);
 void mkey_mixer_play(MkeyMixer *mixer, MkeySampleId sample);
 void mkey_mixer_render(MkeyMixer *mixer, int volume, int16_t *output, size_t frames);

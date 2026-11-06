@@ -1,0 +1,16 @@
+Mkey 2 reference sound pack
+Video: https://www.youtube.com/watch?v=w59fc10mgyM&t=7222s
+Title: Día 717: Creando una Startup Exitosa
+Channel: srD4vo
+Format: PCM s16le, 48000 Hz, mono.
+The clip contains voice and background audio. These excerpts use percussive separation and spectral gating.
+Offline preparation: STFT 1024, hop 128; harmonic median 51 frames; percussive median 21 bins; cubic soft mask.
+Noise reference: source 7234.021–7242.021 s; subtract 1.4 times its median magnitude; suppress bins below 200 Hz.
+Gain is matched to the original pack at its 35% reference level.
+The key/space/Enter and mouse-down/up mappings are chosen playback variants, not verified physical key identities.
+
+key: source 7213.723000–7213.793000 s, 70 ms, reference peak 0.190.
+space: source 7213.448000–7213.523000 s, 75 ms, reference peak 0.220.
+enter: source 7212.671000–7212.741000 s, 70 ms, reference peak 0.200.
+mouse-down: source 7217.998000–7218.048000 s, 50 ms, reference peak 0.090.
+mouse-up: source 7230.278000–7230.323000 s, 45 ms, reference peak 0.075.

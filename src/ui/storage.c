@@ -25,8 +25,8 @@ static void load_legacy_interface(MkeyUi *ui)
 void mkey_ui_load(MkeyUi *ui)
 {
     ui->settings = mkey_settings_default();
-    ui->appearance = (MkeyAppearance){
-        .title = g_strdup("Mis sonidos"), .profile = g_strdup("default"), .zoom = 100};
+    ui->appearance =
+        (MkeyAppearance){.title = g_strdup("Mkey 2"), .profile = g_strdup("default"), .zoom = 100};
     mkey_settings_load(ui->paths.settings_file, &ui->settings, NULL);
 
     g_autoptr(GKeyFile) file = g_key_file_new();

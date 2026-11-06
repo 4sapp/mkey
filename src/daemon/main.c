@@ -21,11 +21,29 @@ static void play(MkeySampleId sample, void *data)
     mkey_mixer_play(&audio->mixer, sample);
 }
 
+static gboolean select_pack(MkeyAudio *audio, MkeySample **samples, const char *base,
+                            MkeySoundPack pack, GError **error)
+{
+    g_autofree char *directory = mkey_sound_pack_directory(base, pack);
+    MkeySample *next = g_new0(MkeySample, MKEY_SAMPLE_COUNT);
+    if (!mkey_samples_load(next, directory, error)) {
+        g_free(next);
+        return FALSE;
+    }
+
+    mkey_mixer_set_samples(&audio->mixer, next);
+    mkey_samples_clear(*samples);
+    g_free(*samples);
+    *samples = next;
+    g_printerr("Sound pack: %s\n", mkey_sound_pack_name(pack));
+    return TRUE;
+}
+
 int main(int argc, char **argv)
 {
     MkeyPaths paths = {0};
     MkeySettings settings = mkey_settings_default();
-    MkeySample samples[MKEY_SAMPLE_COUNT] = {0};
+    MkeySample *samples = g_new0(MkeySample, MKEY_SAMPLE_COUNT);
     MkeyAudio audio;
     MkeyInput input;
     g_autoptr(GError) error = NULL;
@@ -34,7 +52,8 @@ int main(int argc, char **argv)
     mkey_paths_init(&paths, g_getenv("MKEY_DATA_DIR"));
     const char *sounds_dir = argc > 1 ? argv[1] : paths.sounds_dir;
     mkey_settings_load(paths.settings_file, &settings, NULL);
-    if (!mkey_samples_load(samples, sounds_dir, &error) ||
+    g_autofree char *pack_directory = mkey_sound_pack_directory(sounds_dir, settings.sound_pack);
+    if (!mkey_samples_load(samples, pack_directory, &error) ||
         !mkey_audio_start(&audio, samples, settings.volume, &error)) {
         g_printerr("%s\n", error->message);
         goto cleanup;
@@ -51,9 +70,18 @@ int main(int argc, char **argv)
         result = EXIT_SUCCESS;
     } else {
         uint64_t last_preview = settings.preview_nonce;
+        MkeySoundPack last_requested_pack = settings.sound_pack;
         mkey_input_init(&input);
         while (running) {
             if (mkey_settings_load(paths.settings_file, &settings, NULL)) {
+                if (settings.sound_pack != last_requested_pack) {
+                    last_requested_pack = settings.sound_pack;
+                    g_autoptr(GError) pack_error = NULL;
+                    if (!select_pack(&audio, &samples, sounds_dir, settings.sound_pack,
+                                     &pack_error)) {
+                        g_printerr("Cannot change sound pack: %s\n", pack_error->message);
+                    }
+                }
                 atomic_store(&audio.volume, settings.volume);
                 if (settings.preview_nonce && settings.preview_nonce != last_preview) {
                     play((MkeySampleId)settings.preview_sample, &audio);
@@ -71,6 +99,7 @@ int main(int argc, char **argv)
     mkey_audio_stop(&audio);
 cleanup:
     mkey_samples_clear(samples);
+    g_free(samples);
     mkey_paths_clear(&paths);
     return result;
 }

@@ -96,7 +96,7 @@ void mkey_ui_show_preferences(MkeyUi *ui)
         return;
     }
     ui->preferences = GTK_WINDOW(gtk_application_window_new(ui->application));
-    gtk_window_set_title(ui->preferences, "Preferencias de Mkey");
+    gtk_window_set_title(ui->preferences, "Preferencias de Mkey 2");
     gtk_window_set_transient_for(ui->preferences, ui->window);
     gtk_window_set_modal(ui->preferences, TRUE);
     gtk_window_set_default_size(ui->preferences, 530, 330);
@@ -107,13 +107,14 @@ void mkey_ui_show_preferences(MkeyUi *ui)
 
     GtkWidget *body = gtk_box_new(GTK_ORIENTATION_VERTICAL, 24);
     mkey_widget_margins(body, 20, 16);
-    GtkWidget *heading = mkey_label("Preferencias de Mkey", "preftitle");
+    GtkWidget *heading = mkey_label("Preferencias de Mkey 2", "preftitle");
     gtk_widget_set_halign(heading, GTK_ALIGN_CENTER);
     gtk_box_append(GTK_BOX(body), heading);
     GtkWidget *preview = gtk_button_new_with_label("Teclado y mouse");
     g_signal_connect(preview, "clicked", G_CALLBACK(preview_clicked), ui);
     gtk_box_append(GTK_BOX(body),
-                   preference_row("Sonidos del video", "Muestras de Hayyoth · mkey", preview));
+                   preference_row("Sonidos del video",
+                                  "El paquete se elige en la ventana principal.", preview));
     GtkWidget *hide = gtk_switch_new();
     gtk_switch_set_active(GTK_SWITCH(hide), ui->appearance.hide_toolbar);
     g_signal_connect(hide, "notify::active", G_CALLBACK(toolbar_changed), ui);
@@ -125,7 +126,7 @@ void mkey_ui_show_preferences(MkeyUi *ui)
                    preference_row("Activar sonidos al iniciar sesión",
                                   "El sonido sigue activo al cerrar esta ventana.", start));
     GtkWidget *bottom = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
-    GtkWidget *credit = mkey_label("Mkey · Basado en Jorts", "detail");
+    GtkWidget *credit = mkey_label("Mkey 2 · Basado en Jorts", "detail");
     gtk_widget_set_hexpand(credit, TRUE);
     gtk_box_append(GTK_BOX(bottom), credit);
     GtkWidget *restore = gtk_button_new_with_label("Restaurar perfil");

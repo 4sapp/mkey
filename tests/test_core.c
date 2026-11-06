@@ -15,7 +15,8 @@ static void settings_roundtrip(void)
                            .mouse_enabled = TRUE,
                            .theme = 7,
                            .preview_nonce = UINT64_MAX,
-                           .preview_sample = 4};
+                           .preview_sample = 4,
+                           .sound_pack = MKEY_PACK_2};
     MkeySettings loaded = {0};
     g_assert_true(mkey_settings_save(path, &source, NULL));
     g_assert_true(mkey_settings_load(path, &loaded, NULL));
@@ -25,6 +26,7 @@ static void settings_roundtrip(void)
     g_assert_cmpint(loaded.theme, ==, 7);
     g_assert_true(loaded.preview_nonce == UINT64_MAX);
     g_assert_cmpint(loaded.preview_sample, ==, 4);
+    g_assert_cmpint(loaded.sound_pack, ==, MKEY_PACK_2);
     g_remove(path);
     g_rmdir(directory);
 }
@@ -143,9 +145,80 @@ static void samples_reject_corrupt_file(void)
     g_rmdir(directory);
 }
 
+static void settings_legacy_pack(void)
+{
+    g_autofree char *directory = g_dir_make_tmp("mkey-legacy-XXXXXX", NULL);
+    g_autofree char *path = g_build_filename(directory, "settings", NULL);
+    MkeySettings settings = mkey_settings_default();
+    g_assert_cmpint(settings.sound_pack, ==, MKEY_PACK_2);
+    g_assert_true(g_file_set_contents(path, "70 1 1 0 0 0\n", -1, NULL));
+    g_assert_true(mkey_settings_load(path, &settings, NULL));
+    g_assert_cmpint(settings.sound_pack, ==, MKEY_PACK_ORIGINAL);
+    g_assert_true(g_file_set_contents(path, "70 1 1 0 0 0 99\n", -1, NULL));
+    g_assert_true(mkey_settings_load(path, &settings, NULL));
+    g_assert_cmpint(settings.sound_pack, ==, MKEY_PACK_2);
+    g_remove(path);
+    g_rmdir(directory);
+}
+
+static void mixer_pack_switch(void)
+{
+    int16_t original_frames[] = {1000, 2000, 3000};
+    int16_t next_frames[] = {-1000, -2000};
+    MkeySample original[MKEY_SAMPLE_COUNT] = {{.frames = original_frames, .count = 3}};
+    MkeySample next[MKEY_SAMPLE_COUNT] = {{.frames = next_frames, .count = 2}};
+    MkeyMixer mixer;
+    int16_t output[3];
+    mkey_mixer_init(&mixer, original);
+    mkey_mixer_play(&mixer, MKEY_KEY);
+    mkey_mixer_render(&mixer, 35, output, 1);
+    g_assert_cmpint(output[0], ==, 1000);
+    mkey_mixer_set_samples(&mixer, next);
+    mkey_mixer_render(&mixer, 35, output, 3);
+    g_assert_cmpint(output[0], ==, 0);
+    mkey_mixer_play(&mixer, MKEY_KEY);
+    mkey_mixer_render(&mixer, 35, output, 3);
+    g_assert_cmpint(output[0], ==, -1000);
+    g_assert_cmpint(output[1], ==, -2000);
+    g_assert_cmpint(output[2], ==, 0);
+    mkey_mixer_clear(&mixer);
+}
+
+static void sound_pack_paths(void)
+{
+    g_autofree char *original = mkey_sound_pack_directory("/sounds", MKEY_PACK_ORIGINAL);
+    g_autofree char *next = mkey_sound_pack_directory("/sounds", MKEY_PACK_2);
+    g_assert_cmpstr(original, ==, "/sounds");
+    g_assert_cmpstr(next, ==, "/sounds/mkey2");
+}
+
+static void bundled_sound_packs(void)
+{
+    const char *data = g_getenv("MKEY_DATA_DIR");
+    g_autofree char *base = g_build_filename(data ? data : "data", "sounds", NULL);
+    for (int pack = 0; pack < MKEY_PACK_COUNT; pack++) {
+        g_autofree char *directory = mkey_sound_pack_directory(base, (MkeySoundPack)pack);
+        MkeySample samples[MKEY_SAMPLE_COUNT] = {0};
+        g_assert_true(mkey_samples_load(samples, directory, NULL));
+        for (int i = 0; i < MKEY_SAMPLE_COUNT; i++) {
+            g_assert_cmpuint(samples[i].count, >, 0);
+            gboolean nonzero = FALSE;
+            for (size_t frame = 0; frame < samples[i].count; frame++) {
+                nonzero |= samples[i].frames[frame] != 0;
+            }
+            g_assert_true(nonzero);
+        }
+        mkey_samples_clear(samples);
+    }
+}
+
 int main(int argc, char **argv)
 {
     g_test_init(&argc, &argv, NULL);
+    g_test_add_func("/samples/bundled-packs", bundled_sound_packs);
+    g_test_add_func("/settings/legacy-pack", settings_legacy_pack);
+    g_test_add_func("/mixer/pack-switch", mixer_pack_switch);
+    g_test_add_func("/packs/paths", sound_pack_paths);
     g_test_add_func("/settings/roundtrip", settings_roundtrip);
     g_test_add_func("/settings/invalid", settings_invalid);
     g_test_add_func("/mixer/gain-and-completion", mixer_gain_and_completion);

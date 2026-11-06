@@ -1,4 +1,4 @@
-# Mkey
+# Mkey 2
 
 Sonidos de teclado y mouse para Linux, con una interfaz de notas adhesivas basada
 en [Jorts](https://codeberg.org/elly-code/jorts). El servicio de audio y la interfaz
@@ -6,6 +6,7 @@ están escritos en C11.
 
 ![Mkey](docs/screenshots/mkey.png)
 
+- Dos paquetes de sonidos. Mkey 2 usa el nuevo video y Mkey original conserva los anteriores.
 - Volumen en tiempo real y controles independientes para teclado y mouse.
 - Sonidos distintos para teclas, espacio, Enter y pulsación/liberación del mouse.
 - Perfiles con título editable, emojis y restauración del último perfil eliminado.
@@ -43,7 +44,7 @@ systemctl --user daemon-reload
 systemctl --user enable --now mkey.service
 ```
 
-Abre **Mkey** desde el menú de aplicaciones o ejecuta `~/.local/bin/mkey-gui`.
+Abre **Mkey 2** desde el menú de aplicaciones o ejecuta `~/.local/bin/mkey-gui`.
 Por defecto se instala en `~/.local`; `PREFIX` y `DESTDIR` permiten cambiar o
 preparar el destino de instalación.
 
@@ -99,7 +100,7 @@ La configuración respeta `XDG_CONFIG_HOME` y los datos `XDG_DATA_HOME`:
 
 ```text
 ~/.config/mkey/
-  settings           Volumen, dispositivos y solicitudes de prueba
+  settings           Volumen, dispositivos, paquete y solicitudes de prueba
   interface.ini      Título y apariencia de la ventana
   profiles-v2/       Perfiles guardados
   deleted-profile.ini
@@ -107,6 +108,7 @@ La configuración respeta `XDG_CONFIG_HOME` y los datos `XDG_DATA_HOME`:
 ~/.local/share/mkey/
   style.css
   sounds/*.pcm
+  sounds/mkey2/*.pcm
 ```
 
 `MKEY_DATA_DIR` permite ejecutar desde el código fuente:

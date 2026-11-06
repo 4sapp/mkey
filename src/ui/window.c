@@ -4,6 +4,7 @@
 void mkey_ui_refresh(MkeyUi *ui)
 {
     ui->updating = TRUE;
+    gtk_drop_down_set_selected(ui->sound_pack_selector, ui->settings.sound_pack);
     gtk_range_set_value(ui->volume_scale, ui->settings.volume);
     gtk_switch_set_active(ui->keyboard_switch, ui->settings.keyboard_enabled);
     gtk_switch_set_active(ui->mouse_switch, ui->settings.mouse_enabled);
@@ -181,6 +182,7 @@ static GtkWidget *create_controls(MkeyUi *ui)
     gtk_widget_add_css_class(body, "body");
     gtk_widget_set_vexpand(body, TRUE);
     mkey_widget_margins(body, 18, 16);
+    gtk_box_append(GTK_BOX(body), mkey_row("Sonidos", mkey_ui_sound_pack_selector(ui)));
     ui->volume_label = GTK_LABEL(mkey_label(NULL, "volume"));
     gtk_box_append(GTK_BOX(body), mkey_row("Volumen", GTK_WIDGET(ui->volume_label)));
     GtkWidget *scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0, 100, 1);

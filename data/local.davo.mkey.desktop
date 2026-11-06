@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Mkey
+Name=Mkey 2
 Comment=Keyboard and mouse sounds
 Comment[es]=Sonidos de teclado y mouse
 Exec=env MKEY_DATA_DIR="@DATADIR@" "@BINDIR@/mkey-gui"

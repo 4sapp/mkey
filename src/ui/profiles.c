@@ -23,6 +23,7 @@ void mkey_ui_profile_save(MkeyUi *ui)
     }
     g_key_file_set_string(profile, "Profile", "title", ui->appearance.title);
     g_key_file_set_integer(profile, "Profile", "volume", ui->settings.volume);
+    g_key_file_set_integer(profile, "Profile", "sound-pack", ui->settings.sound_pack);
     g_key_file_set_boolean(profile, "Profile", "keyboard", ui->settings.keyboard_enabled);
     g_key_file_set_boolean(profile, "Profile", "mouse", ui->settings.mouse_enabled);
     g_key_file_set_integer(profile, "Profile", "theme", ui->settings.theme);
@@ -45,6 +46,8 @@ gboolean mkey_ui_profile_load(MkeyUi *ui, const char *id)
     if (!title) {
         return FALSE;
     }
+    ui->settings.sound_pack = CLAMP(g_key_file_get_integer(profile, "Profile", "sound-pack", NULL),
+                                    MKEY_PACK_ORIGINAL, MKEY_PACK_COUNT - 1);
     ui->settings.volume = CLAMP(g_key_file_get_integer(profile, "Profile", "volume", NULL), 0, 100);
     ui->settings.keyboard_enabled = g_key_file_get_boolean(profile, "Profile", "keyboard", NULL);
     ui->settings.mouse_enabled = g_key_file_get_boolean(profile, "Profile", "mouse", NULL);

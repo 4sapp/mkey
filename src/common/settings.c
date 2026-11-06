@@ -41,7 +41,8 @@ gboolean mkey_paths_create(const MkeyPaths *paths, GError **error)
 
 MkeySettings mkey_settings_default(void)
 {
-    return (MkeySettings){.volume = 70, .keyboard_enabled = TRUE, .mouse_enabled = TRUE};
+    return (MkeySettings){
+        .volume = 70, .keyboard_enabled = TRUE, .mouse_enabled = TRUE, .sound_pack = MKEY_PACK_2};
 }
 
 gboolean mkey_settings_load(const char *path, MkeySettings *settings, GError **error)
@@ -49,16 +50,19 @@ gboolean mkey_settings_load(const char *path, MkeySettings *settings, GError **e
     g_autofree char *text = NULL;
     MkeySettings next = mkey_settings_default();
     int keyboard, mouse;
+    int pack = MKEY_PACK_ORIGINAL;
 
     if (!g_file_get_contents(path, &text, NULL, error)) {
         return FALSE;
     }
-    if (sscanf(text, "%d %d %d %d %" SCNu64 " %d", &next.volume, &keyboard, &mouse, &next.theme,
-               &next.preview_nonce, &next.preview_sample) != 6) {
+    int fields = sscanf(text, "%d %d %d %d %" SCNu64 " %d %d", &next.volume, &keyboard, &mouse,
+                        &next.theme, &next.preview_nonce, &next.preview_sample, &pack);
+    if (fields < 6) {
         g_set_error_literal(error, G_FILE_ERROR, G_FILE_ERROR_INVAL,
-                            "Invalid Mkey settings: expected six integers");
+                            "Invalid Mkey settings: expected at least six integers");
         return FALSE;
     }
+    next.sound_pack = CLAMP(pack, MKEY_PACK_ORIGINAL, MKEY_PACK_COUNT - 1);
 
     next.volume = CLAMP(next.volume, 0, 100);
     next.keyboard_enabled = keyboard != 0;
@@ -72,8 +76,8 @@ gboolean mkey_settings_load(const char *path, MkeySettings *settings, GError **e
 gboolean mkey_settings_save(const char *path, const MkeySettings *settings, GError **error)
 {
     g_autofree char *text =
-        g_strdup_printf("%d %d %d %d %" PRIu64 " %d\n", settings->volume,
+        g_strdup_printf("%d %d %d %d %" PRIu64 " %d %d\n", settings->volume,
                         settings->keyboard_enabled, settings->mouse_enabled, settings->theme,
-                        settings->preview_nonce, settings->preview_sample);
+                        settings->preview_nonce, settings->preview_sample, settings->sound_pack);
     return g_file_set_contents(path, text, -1, error);
 }

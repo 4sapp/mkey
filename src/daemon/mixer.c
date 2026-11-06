@@ -1,6 +1,8 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #include "mixer.h"
 
+#include <string.h>
+
 /* The reference samples were prepared at 35% gain. Keep their relative levels. */
 #define SAMPLE_REFERENCE_VOLUME 35.0
 
@@ -8,6 +10,14 @@ void mkey_mixer_init(MkeyMixer *mixer, const MkeySample *samples)
 {
     *mixer = (MkeyMixer){.samples = samples};
     pthread_mutex_init(&mixer->mutex, NULL);
+}
+
+void mkey_mixer_set_samples(MkeyMixer *mixer, const MkeySample *samples)
+{
+    pthread_mutex_lock(&mixer->mutex);
+    memset(mixer->voices, 0, sizeof(mixer->voices));
+    mixer->samples = samples;
+    pthread_mutex_unlock(&mixer->mutex);
 }
 
 void mkey_mixer_clear(MkeyMixer *mixer)

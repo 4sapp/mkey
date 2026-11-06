@@ -75,3 +75,16 @@ button.swatch:hover { outline: 2px solid #777; outline-offset: 2px; }
 .prefwindow .prefname { font-size: 15px; font-weight: 600; }
 .prefwindow .detail { font-size: 12px; opacity: 0.7; }
 .prefwindow button { padding: 7px 18px; }
+
+.mkey dropdown > button {
+    background: alpha(white, 0.3);
+    color: @note_ink;
+    border: 1px solid alpha(@note_ink, 0.15);
+    box-shadow: none;
+}
+.mkey .body dropdown label { font-size: 15px; }
+
+.mkey switch slider {
+    background: #fff;
+    border: 1px solid alpha(@note_ink, 0.2);
+}

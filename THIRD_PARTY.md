@@ -26,3 +26,13 @@ The GPL license for Mkey's code does not grant a license to the original video o
 these excerpts. No separate redistribution license from the video author is
 asserted. Replace these samples with your own recordings when distributing a
 sound pack under a different license.
+
+## Mkey 2 reference excerpts
+
+The five PCM files in `data/sounds/mkey2/` are short excerpts from
+[srD4vo's Día 717: Creando una Startup Exitosa](https://www.youtube.com/watch?v=w59fc10mgyM&t=7222s).
+The reference includes voice and background audio. Offline processing isolates
+percussive events and reduces the background before mapping the clips to keys
+and mouse buttons. [Provenance](data/sounds/mkey2/SOURCE.txt) records the timestamps
+and processing. No license to the original recording is asserted by the GPL
+license on the application source.

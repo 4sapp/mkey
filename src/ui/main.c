@@ -29,6 +29,10 @@ static gboolean run_smoke_test(gpointer data)
     gtk_switch_set_active(ui->mouse_switch, FALSE);
     g_assert_false(ui->settings.keyboard_enabled);
     g_assert_false(ui->settings.mouse_enabled);
+    gtk_drop_down_set_selected(ui->sound_pack_selector, MKEY_PACK_ORIGINAL);
+    g_assert_cmpint(ui->settings.sound_pack, ==, MKEY_PACK_ORIGINAL);
+    gtk_drop_down_set_selected(ui->sound_pack_selector, MKEY_PACK_2);
+    g_assert_cmpint(ui->settings.sound_pack, ==, MKEY_PACK_2);
     ui->settings.theme = 7;
     mkey_ui_save(ui);
     mkey_ui_profile_new(ui);
@@ -36,6 +40,7 @@ static gboolean run_smoke_test(gpointer data)
     g_assert_true(mkey_ui_profile_load(ui, "default"));
     g_assert_true(mkey_ui_profile_load(ui, profile));
     g_assert_cmpint(ui->settings.theme, ==, 7);
+    g_assert_cmpint(ui->settings.sound_pack, ==, MKEY_PACK_2);
     mkey_ui_profile_delete(ui);
     g_assert_cmpint(ui->settings.volume, ==, 70);
     mkey_ui_profile_restore(ui);
@@ -46,6 +51,7 @@ static gboolean run_smoke_test(gpointer data)
     MkeySettings saved;
     g_assert_true(mkey_settings_load(ui->paths.settings_file, &saved, NULL));
     g_assert_cmpint(saved.volume, ==, 82);
+    g_assert_cmpint(saved.sound_pack, ==, MKEY_PACK_2);
     g_print("PASS: controls, persistence, profiles, deletion/restore, appearance\n");
     g_application_quit(G_APPLICATION(ui->application));
     return G_SOURCE_REMOVE;

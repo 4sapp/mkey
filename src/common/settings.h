@@ -2,6 +2,7 @@
 #ifndef MKEY_SETTINGS_H
 #define MKEY_SETTINGS_H
 
+#include "sound_packs.h"
 #include <glib.h>
 #include <stdint.h>
 
@@ -12,6 +13,7 @@ typedef struct {
     int theme;
     uint64_t preview_nonce;
     int preview_sample;
+    MkeySoundPack sound_pack;
 } MkeySettings;
 
 typedef struct {

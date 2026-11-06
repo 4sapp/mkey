@@ -8,6 +8,7 @@ can exit without terminating the daemon.
 
 | Location | Responsibility |
 | --- | --- |
+| `src/common/sound_packs.*` | Sound-pack identifiers, names and directories |
 | `src/common/settings.*` | XDG paths, defaults, parsing, validation, atomic writes |
 | `src/daemon/main.c` | Startup, settings reload, preview requests, shutdown |
 | `src/daemon/input.*` | Device discovery, hotplug retry, evdev-to-sample mapping |
@@ -20,6 +21,7 @@ can exit without terminating the daemon.
 | `src/ui/appearance.c` | Theme palette, CSS, zoom and monospace controls |
 | `src/ui/profiles.c` | Named profile persistence, selection, deletion and restore |
 | `src/ui/preferences.c` | Preferences window and systemd autostart |
+| `src/ui/sound_packs.c` | Live sound-pack selector |
 | `src/ui/storage.c` | UI preferences, settings writes, legacy interface import |
 | `src/ui/widgets.c` | Shared widget helpers and error presentation |
 | `data/style.css` | Static GTK styling |
@@ -28,7 +30,10 @@ can exit without terminating the daemon.
 
 The main daemon thread polls input devices and reads settings. Its only shared
 mutable audio state is the atomic volume/running flags and the mixer voice list,
-protected by a mutex. The sample buffers are immutable after startup. The audio
+protected by a mutex. The mixer holds its sample-bank pointer under the same mutex as its voices.
+Changing packs validates and loads the new bank first, then swaps it under the
+lock and clears active voices. Old buffers are freed after the swap. The audio
+stream stays connected, so OBS can keep capturing it. The audio
 thread renders 240-frame blocks and writes to a persistent PulseAudio stream.
 PipeWire's PulseAudio compatibility server is supported.
 
@@ -41,8 +46,9 @@ waits for the audio thread; a stalled audio server can delay its blocking write.
 
 ## Storage
 
-Settings use the original six-integer format for compatibility with the initial
-local version. Malformed files are rejected without changing the caller's state.
+Settings accept the original six-integer format and the new seven-integer
+format. The seventh value selects the sound pack. Legacy files select the
+original pack; new installations default to Mkey 2. Malformed files are rejected without changing the caller's state.
 Numeric values are clamped before use. Preview requests carry a changing 64-bit
 nonce; the daemon does not replay an old request on startup.
 

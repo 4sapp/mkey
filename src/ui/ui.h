@@ -19,6 +19,7 @@ typedef struct {
     GtkWindow *preferences;
     GtkCssProvider *css;
     GtkLabel *volume_label;
+    GtkDropDown *sound_pack_selector;
     GtkRange *volume_scale;
     GtkSwitch *keyboard_switch;
     GtkSwitch *mouse_switch;
@@ -40,6 +41,7 @@ void mkey_ui_load(MkeyUi *ui);
 void mkey_ui_save(MkeyUi *ui);
 void mkey_ui_preview(MkeyUi *ui, int sample);
 void mkey_ui_error(MkeyUi *ui, const char *message);
+GtkWidget *mkey_ui_sound_pack_selector(MkeyUi *ui);
 void mkey_ui_window_create(MkeyUi *ui);
 void mkey_ui_refresh(MkeyUi *ui);
 void mkey_ui_apply_style(MkeyUi *ui);
